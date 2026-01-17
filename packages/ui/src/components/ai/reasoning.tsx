@@ -8,7 +8,7 @@ import {
 } from "@workspace/ui/components/collapsible";
 import { ChevronDownIcon } from "lucide-react";
 import type { ComponentProps } from "react";
-import { createContext, memo, useContext, useEffect, useState } from "react";
+import { createContext, memo, useContext, useEffect, useRef, useState } from "react";
 import { cn } from "@workspace/ui/lib/utils";
 import { AIResponse } from "@workspace/ui/components/ai/response";
 
@@ -58,7 +58,7 @@ export const AIReasoning = memo(
       defaultProp: 0,
     });
 
-    const [hasAutoClosedRef, setHasAutoClosedRef] = useState(false);
+    const hasAutoClosedRef = useRef(false);
     const [startTime, setStartTime] = useState<number | null>(null);
 
     // Track duration when streaming starts and ends
@@ -77,15 +77,15 @@ export const AIReasoning = memo(
     useEffect(() => {
       if (isStreaming && !isOpen) {
         setIsOpen(true);
-      } else if (!isStreaming && isOpen && !defaultOpen && !hasAutoClosedRef) {
+      } else if (!isStreaming && isOpen && !defaultOpen && !hasAutoClosedRef.current) {
         // Add a small delay before closing to allow user to see the content
         const timer = setTimeout(() => {
           setIsOpen(false);
-          setHasAutoClosedRef(true);
+          hasAutoClosedRef.current = true;
         }, 1000);
         return () => clearTimeout(timer);
       }
-    }, [isStreaming, isOpen, defaultOpen, setIsOpen, hasAutoClosedRef]);
+    }, [isStreaming, isOpen, defaultOpen, setIsOpen]);
 
     const handleOpenChange = (open: boolean) => {
       setIsOpen(open);

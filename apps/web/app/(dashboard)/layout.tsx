@@ -29,6 +29,7 @@ import { cn } from "@workspace/ui/lib/utils";
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const pathname = usePathname();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const currentUser = useQuery(api.users.getCurrentUser);
   const hasSuperadmin = useQuery(api.users.hasSuperadmin);
 
@@ -83,8 +84,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       { label: "Pending Users", href: "/admin/pending-users", icon: Users },
     ] : []),
   ];
-
-  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const SidebarContent = ({ onNavigate }: { onNavigate?: () => void }) => (
     <>

@@ -53,15 +53,15 @@ export default function PendingApprovalPage() {
           <div className="mx-auto mb-4 p-3 bg-amber-100 dark:bg-amber-900/30 rounded-full w-fit">
             <Clock className="h-8 w-8 text-amber-600 dark:text-amber-400" />
           </div>
-          <CardTitle>Aguardando Aprovacao</CardTitle>
+          <CardTitle>Awaiting Approval</CardTitle>
         </CardHeader>
         <CardContent className="text-center space-y-4">
           <p className="text-muted-foreground">
-            Sua conta foi criada com sucesso! Agora voce precisa aguardar a
-            aprovacao de um administrador para acessar o sistema.
+            Your account has been created successfully! You now need to wait for
+            an administrator to approve your access to the system.
           </p>
           <p className="text-sm text-muted-foreground">
-            Voce recebera acesso assim que sua conta for aprovada.
+            You will receive access once your account is approved.
           </p>
         </CardContent>
       </Card>

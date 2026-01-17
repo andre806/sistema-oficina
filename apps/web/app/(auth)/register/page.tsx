@@ -53,7 +53,7 @@ export default function RegisterPage() {
           await addUser({});
           router.push("/pending-approval");
         } catch (err) {
-          setError(err instanceof Error ? err.message : "Erro ao registrar");
+          setError(err instanceof Error ? err.message : "Error registering");
           setIsLoading(false);
         }
       }
@@ -73,7 +73,7 @@ export default function RegisterPage() {
     return (
       <div className="flex min-h-screen items-center justify-center flex-col gap-4">
         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-        <p className="text-muted-foreground">Criando sua conta...</p>
+        <p className="text-muted-foreground">Creating your account...</p>
       </div>
     );
   }

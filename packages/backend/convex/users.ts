@@ -26,9 +26,11 @@ export const getCurrentUser = query({
 export const hasSuperadmin = query({
   args: {},
   handler: async (ctx) => {
-    const users = await ctx.db.query("users").collect();
-    const superadmin = users.find((u) => u.role === Role.SUPERADMIN);
-    return !!superadmin;
+    const superadmin = await ctx.db
+      .query("users")
+      .withIndex("by_role", (q) => q.eq("role", Role.SUPERADMIN))
+      .first();
+    return superadmin !== null;
   },
 });
 
@@ -63,7 +65,6 @@ export const add = mutation({
       name: identity.name ?? "Unknown",
       clerkId: clerkId,
       role: Role.USER,
-      sector: undefined,
       status: UserStatus.PENDING,
     });
 
@@ -79,8 +80,10 @@ export const bootstrap = mutation({
       throw new Error("Not authenticated");
     }
 
-    const users = await ctx.db.query("users").collect();
-    const existingSuperadmin = users.find((u) => u.role === Role.SUPERADMIN);
+    const existingSuperadmin = await ctx.db
+      .query("users")
+      .withIndex("by_role", (q) => q.eq("role", Role.SUPERADMIN))
+      .first();
 
     if (existingSuperadmin) {
       throw new Error("Superadmin already exists");
@@ -100,7 +103,6 @@ export const bootstrap = mutation({
       name: identity.name ?? "Superadmin",
       clerkId: clerkId,
       role: Role.SUPERADMIN,
-      sector: undefined,
       status: UserStatus.APPROVED,
       approvedAt: Date.now(),
     });
@@ -243,8 +245,15 @@ export const getPendingUsers = query({
       return [];
     }
 
-    const allUsers = await ctx.db.query("users").collect();
-    return allUsers.filter((u) => u.status === UserStatus.PENDING || u.status === undefined);
+    const pendingUsers = await ctx.db
+      .query("users")
+      .withIndex("by_status", (q) => q.eq("status", UserStatus.PENDING))
+      .collect();
+    const noStatusUsers = await ctx.db
+      .query("users")
+      .withIndex("by_status", (q) => q.eq("status", undefined))
+      .collect();
+    return [...pendingUsers, ...noStatusUsers];
   },
 });
 
@@ -265,9 +274,15 @@ export const getPendingUsersCount = query({
       return 0;
     }
 
-    const allUsers = await ctx.db.query("users").collect();
-    const pending = allUsers.filter((u) => u.status === UserStatus.PENDING || u.status === undefined);
-    return pending.length;
+    const pendingUsers = await ctx.db
+      .query("users")
+      .withIndex("by_status", (q) => q.eq("status", UserStatus.PENDING))
+      .collect();
+    const noStatusUsers = await ctx.db
+      .query("users")
+      .withIndex("by_status", (q) => q.eq("status", undefined))
+      .collect();
+    return pendingUsers.length + noStatusUsers.length;
   },
 });
 
@@ -305,7 +320,8 @@ export const approveUser = mutation({
       throw new Error("Target user not found");
     }
 
-    if (targetUser.status !== UserStatus.PENDING && targetUser.status !== undefined) {
+    const isPending = targetUser.status === UserStatus.PENDING || targetUser.status === undefined;
+    if (!isPending) {
       throw new Error("User is not pending approval");
     }
 
@@ -349,7 +365,8 @@ export const rejectUser = mutation({
       throw new Error("Target user not found");
     }
 
-    if (targetUser.status !== UserStatus.PENDING && targetUser.status !== undefined) {
+    const isPending = targetUser.status === UserStatus.PENDING || targetUser.status === undefined;
+    if (!isPending) {
       throw new Error("User is not pending approval");
     }
 
@@ -381,10 +398,13 @@ export const migrateExistingUsers = mutation({
       throw new Error("Only superadmin can run migration");
     }
 
-    const users = await ctx.db.query("users").collect();
+    const usersWithoutStatus = await ctx.db
+      .query("users")
+      .withIndex("by_status", (q) => q.eq("status", undefined))
+      .collect();
     let migratedCount = 0;
 
-    for (const user of users) {
+    for (const user of usersWithoutStatus) {
       if (!user.status) {
         await ctx.db.patch(user._id, {
           status: UserStatus.APPROVED,
