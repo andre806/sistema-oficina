@@ -1,4 +1,4 @@
-# Setup do Projeto Arenge
+# Setup do Projeto CrazyTemplate
 
 Guia completo para configurar o projeto do zero.
 
@@ -264,4 +264,4 @@ SETAR NO ENV CHAVE DE DEPLOY PROD GERADA NO SITE DO CONVEX
 
 CONVEX_DEPLOY_KEY="prod:your-key" 
  
-RODAR npx convex deploy --env-file .env.prod 
+RODAR npx convex deploy --env-file .env.prod
