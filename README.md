@@ -431,36 +431,7 @@ pnpm dlx shadcn@latest add <componente>
 Os componentes serao adicionados em `packages/ui/src/components/`.
 
 ---
-
-## Sistema de Assinaturas (Stripe)
-
-### Funcionalidades
-
-- Assinaturas em nivel de organizacao
-- Atualizacoes em tempo real via Convex
-- Componentes de protecao client e server-side
-- Controle de acesso a features premium
-
-### Uso Basico
-
-```tsx
-// Proteger feature premium
-import { SubscriptionProtect } from "@/components/subscription-protect";
-
-<SubscriptionProtect fallback={<UpgradePrompt />}>
-  <PremiumFeature />
-</SubscriptionProtect>
-```
-
-```tsx
-// Hook para verificar assinatura
-import { useSubscription } from "@/hooks/use-subscription";
-
-const { hasActiveSubscription, tier, isLoading } = useSubscription();
-```
-
----
-
+ 
 ## Deploy
 
 ### Frontend (Vercel)
