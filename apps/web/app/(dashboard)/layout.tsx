@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
 import { UserButton } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { api } from "@workspace/backend/_generated/api";
@@ -24,13 +23,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@workspace/ui/lib/utils";
 import { FullPageLoader } from "@/components/full-page-loader";
+import { useAuthRedirect } from "@/hooks/use-auth-redirect";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
-  const router = useRouter();
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const currentUser = useQuery(api.users.getCurrentUser);
-  const hasSuperadmin = useQuery(api.users.hasSuperadmin);
+
+  const { currentUser, hasSuperadmin, isLoading } = useAuthRedirect({
+    whenApproved: undefined,
+  });
 
   const isSuperadminOrCeo = currentUser?.role === "superadmin" || currentUser?.role === "ceo";
   const pendingUsersCount = useQuery(
@@ -46,30 +47,11 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     ] : []),
   ], [isSuperadminOrCeo]);
 
-  useEffect(() => {
-    if (hasSuperadmin === false) {
-      router.push("/bootstrap");
-      return;
-    }
-    if (currentUser === null && hasSuperadmin === true) {
-      router.push("/register");
-      return;
-    }
-    if (currentUser?.status === "pending") {
-      router.push("/pending-approval");
-      return;
-    }
-    if (currentUser?.status === "rejected") {
-      router.push("/rejected");
-      return;
-    }
-  }, [currentUser, hasSuperadmin, router]);
-
-  if (currentUser === undefined || hasSuperadmin === undefined) {
+  if (isLoading) {
     return <FullPageLoader />;
   }
 
-  if (hasSuperadmin === false || currentUser === null) {
+  if (hasSuperadmin === false || !currentUser) {
     return null;
   }
 

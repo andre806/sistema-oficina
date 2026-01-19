@@ -2,42 +2,29 @@
 
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { useMutation, useQuery } from "convex/react";
+import { useMutation } from "convex/react";
 import { api } from "@workspace/backend/_generated/api";
 import {
   Card,
   CardContent,
 } from "@workspace/ui/components/card";
 import { FullPageLoader } from "@/components/full-page-loader";
+import { useAuthRedirect } from "@/hooks/use-auth-redirect";
 
 export default function RegisterPage() {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const registerAttempted = useRef(false);
 
-  const currentUser = useQuery(api.users.getCurrentUser);
-  const hasSuperadmin = useQuery(api.users.hasSuperadmin);
+  const { currentUser, hasSuperadmin, isLoading } = useAuthRedirect({
+    whenNoUser: undefined,
+    whenApproved: "/",
+    whenPending: "/pending-approval",
+    whenRejected: "/rejected",
+  });
+
   const addUser = useMutation(api.users.add);
-
-  useEffect(() => {
-    if (hasSuperadmin === false) {
-      router.push("/bootstrap");
-      return;
-    }
-  }, [hasSuperadmin, router]);
-
-  useEffect(() => {
-    if (currentUser) {
-      if (currentUser.status === "pending") {
-        router.push("/pending-approval");
-      } else if (currentUser.status === "rejected") {
-        router.push("/rejected");
-      } else if (currentUser.status === "approved") {
-        router.push("/");
-      }
-    }
-  }, [currentUser, router]);
 
   useEffect(() => {
     const autoRegister = async () => {
@@ -47,24 +34,24 @@ export default function RegisterPage() {
         !registerAttempted.current
       ) {
         registerAttempted.current = true;
-        setIsLoading(true);
+        setIsRegistering(true);
         try {
           await addUser({});
           router.push("/pending-approval");
         } catch (err) {
           setError(err instanceof Error ? err.message : "Error registering");
-          setIsLoading(false);
+          setIsRegistering(false);
         }
       }
     };
     autoRegister();
   }, [hasSuperadmin, currentUser, addUser, router]);
 
-  if (hasSuperadmin === undefined || currentUser === undefined) {
+  if (isLoading) {
     return <FullPageLoader />;
   }
 
-  if (isLoading) {
+  if (isRegistering) {
     return <FullPageLoader message="Creating your account..." />;
   }
 

@@ -1,10 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useQuery } from "convex/react";
 import { useClerk } from "@clerk/nextjs";
-import { api } from "@workspace/backend/_generated/api";
+import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -12,27 +9,23 @@ import {
   CardTitle,
 } from "@workspace/ui/components/card";
 import { Button } from "@workspace/ui/components/button";
-import { XCircle, Loader2 } from "lucide-react";
+import { XCircle } from "lucide-react";
+import { useAuthRedirect } from "@/hooks/use-auth-redirect";
+import { FullPageLoader } from "@/components/full-page-loader";
 
 export default function RejectedPage() {
   const router = useRouter();
   const { signOut } = useClerk();
-  const currentUser = useQuery(api.users.getCurrentUser);
+  const { currentUser, isLoading } = useAuthRedirect({
+    whenApproved: "/",
+    whenPending: "/pending-approval",
+    whenRejected: undefined,
+    whenNoUser: undefined,
+    whenNoSuperadmin: undefined,
+  });
 
-  useEffect(() => {
-    if (currentUser?.status === "approved") {
-      router.push("/");
-    } else if (currentUser?.status === "pending") {
-      router.push("/pending-approval");
-    }
-  }, [currentUser, router]);
-
-  if (currentUser === undefined) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-      </div>
-    );
+  if (isLoading) {
+    return <FullPageLoader />;
   }
 
   const handleSignOut = async () => {
@@ -47,26 +40,25 @@ export default function RejectedPage() {
           <div className="mx-auto mb-4 p-3 bg-red-100 dark:bg-red-900/30 rounded-full w-fit">
             <XCircle className="h-8 w-8 text-red-600 dark:text-red-400" />
           </div>
-          <CardTitle>Acesso Negado</CardTitle>
+          <CardTitle>Access Denied</CardTitle>
         </CardHeader>
         <CardContent className="text-center space-y-4">
           <p className="text-muted-foreground">
-            Infelizmente, sua solicitacao de acesso foi rejeitada.
+            Unfortunately, your access request has been rejected.
           </p>
           {currentUser?.rejectionReason && (
             <div className="p-3 bg-muted rounded-lg">
-              <p className="text-sm font-medium">Motivo:</p>
+              <p className="text-sm font-medium">Reason:</p>
               <p className="text-sm text-muted-foreground">
                 {currentUser.rejectionReason}
               </p>
             </div>
           )}
           <p className="text-sm text-muted-foreground">
-            Se voce acredita que isso foi um erro, entre em contato com o
-            administrador do sistema.
+            If you believe this was a mistake, please contact the system administrator.
           </p>
           <Button onClick={handleSignOut} variant="outline" className="w-full">
-            Sair
+            Sign Out
           </Button>
         </CardContent>
       </Card>
