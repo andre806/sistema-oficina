@@ -65,7 +65,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const SidebarContent = ({ onNavigate }: { onNavigate?: () => void }) => (
     <>
       <div className="p-6">
-        <h1 className="text-xl font-bold">Template App</h1>
+        <h1 className="text-xl font-bold">Restaurantix</h1>
       </div>
       <nav className="px-4 space-y-1">
         {navItems.map((item) => {

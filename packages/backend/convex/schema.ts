@@ -17,4 +17,66 @@ export default defineSchema({
     .index("by_clerk_id", ["clerkId"])
     .index("by_role", ["role"])
     .index("by_status", ["status"]),
+  oficinas: defineTable({
+    nomeFantasia: v.string(),
+    telefone: v.optional(v.string()),
+
+    status: v.string(), // ativa | bloqueada
+
+    createdAt: v.number(),
+  })
+    .index("by_status", ["status"])
+    .index("by_nomeFantasia",["nomeFantasia"]),
+
+  planos: defineTable({
+    nome: v.union(
+      v.literal("gratuito"),
+      v.literal("premium")
+    ),
+
+    limiteVeiculos: v.optional(v.number()), // undefined = ilimitado
+    precoMensal: v.number(),
+
+    ativo: v.boolean(),
+
+    createdAt: v.number(),
+  })
+    .index("by_nome", ["nome"])
+    .index("by_ativo", ["ativo"]),
+  assinaturas: defineTable({
+    oficinaId: v.id("oficinas"),
+    planoId: v.id("planos"),
+
+    status: v.string(), // ativa | atrasada | cancelada
+
+    startedAt: v.number(),
+    expiresAt: v.number(),
+  })
+    .index("by_oficina", ["oficinaId"])
+    .index("by_plano", ["planoId"])
+    .index("by_status", ["status"]),
+  veiculos: defineTable({
+    oficinaId: v.id("oficinas"),
+    placa: v.string(),
+    modelo: v.optional(v.string()),
+    ano: v.optional(v.number()),
+    clienteNome: v.optional(v.string()),
+    clienteTelefone: v.optional(v.string()),
+    ativo: v.boolean(),
+  })
+    .index("by_oficina", ["oficinaId"])
+    .index("by_placa_oficina", ["placa", "oficinaId"])
+    .index("by_cliente_nome", ["clienteNome"]),
+  servicos: defineTable({
+    oficinaId: v.id("oficinas"),
+    veiculoId: v.id("veiculos"),
+    descricao: v.string(),
+    valor: v.optional(v.number()),
+    status: v.any(),
+    dataConclusao:v.optional(v.number())
+  })
+    .index("by_oficina", ["oficinaId"])
+    .index("by_veiculo", ["veiculoId"])
+    .index("by_status", ["status"]),
+
 });
