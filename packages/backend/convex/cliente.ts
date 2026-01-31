@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { query } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
 
 
@@ -137,14 +137,14 @@ export const OrderByValorTotalMovimentado = query({
     const totalMap = new Map<string, number>();
 
     for (const s of servicos) {
-      if (!s.valor) continue;
+      if (!s.orcamento.total) continue;
 
       const veiculo = await ctx.db.get(s.veiculoId);
       if (!veiculo?.clienteNome) continue;
 
       totalMap.set(
         veiculo.clienteNome,
-        (totalMap.get(veiculo.clienteNome) ?? 0) + s.valor
+        (totalMap.get(veiculo.clienteNome) ?? 0) + s.orcamento.total
       );
     }
 

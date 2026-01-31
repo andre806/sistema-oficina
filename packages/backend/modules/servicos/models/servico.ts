@@ -1,10 +1,11 @@
 import { Id } from "@workspace/backend/_generated/dataModel";
-import { NUMBER, STRING } from "types/convex-types";
+import {  STRING } from "types/convex-types";
+import { orcamento } from "./orcamento";
 
 export interface servico {
     oficinaId: Id<"oficinas"> ,
     veiculoId: Id<"veiculos"> ,
     descricao: string,
-    valor?: NUMBER,
+    orcamento: orcamento,
     status: STRING, // aberto | concluido
 }

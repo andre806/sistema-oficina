@@ -72,13 +72,27 @@ export default defineSchema({
     oficinaId: v.id("oficinas"),
     veiculoId: v.id("veiculos"),
     descricao: v.string(),
-    valor: v.optional(v.number()),
+    orcamento: v.object({
+      maoDeObra: v.number(),
+      pecas: v.number(),
+      desconto: v.optional(v.number()),
+      total: v.number(),
+      status: v.union(
+        v.literal("rascunho"),
+        v.literal("aprovado"),
+        v.literal("rejeitado")
+      ),
+      criadoEm: v.number(),
+      aprovadoEm: v.optional(v.number())
+    }),
     status: v.any(),
     dataConclusao: v.optional(v.number())
   })
     .index("by_oficina", ["oficinaId"])
     .index("by_veiculo", ["veiculoId"])
     .index("by_status", ["status"]),
+   
+
   cliente: defineTable({
     oficinaId: v.id("oficinas"),
     nome: v.string(),
@@ -86,5 +100,29 @@ export default defineSchema({
   })
     .index("by_oficina", ["oficinaId"])
     .index("by_nome", ["nome"])
-    .index("by_telefone", ["telefone"])
-    });
+    .index("by_telefone", ["telefone"]),
+    pagamentos: defineTable({
+  oficinaId: v.id("oficinas"),
+  servicoId: v.id("servicos"),
+
+  valor: v.number(),
+
+  forma: v.union(
+    v.literal("dinheiro"),
+    v.literal("pix"),
+    v.literal("cartao_credito"),
+    v.literal("cartao_debito"),
+    v.literal("transferencia")
+  ),
+
+  status: v.union(
+    v.literal("confirmado"),
+    v.literal("pendente"),
+    v.literal("estornado")
+  ),
+
+  criadoEm: v.number(),
+})
+.index("by_servico", ["servicoId"])
+.index("by_oficina",["oficinaId"])
+});
