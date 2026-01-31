@@ -1,4 +1,4 @@
-import { BOOLEAN, NUMBER, STRING } from "../../../types/convex-types.js"
+import { BOOLEAN, NUMBER, STRING } from "../../../types/convex-types"
 
 export interface edit_veiculo_type {
     placa?: STRING

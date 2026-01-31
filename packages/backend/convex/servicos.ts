@@ -1,7 +1,7 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server.js";
-import { create_os_case } from "../modules/servicos/use-cases/create-os.case.js"
-import { concluir_os_case } from "../modules/servicos/use-cases/concluir-os.case.js"
+import { mutation, query } from "./_generated/server";
+import { create_os_case } from "../modules/servicos/use-cases/create-os.case"
+import { concluir_os_case } from "../modules/servicos/use-cases/concluir-os.case"
 export const createOs = mutation({
     args: {
         oficinaId: v.id("oficinas"),

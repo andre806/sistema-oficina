@@ -1,8 +1,10 @@
-import { MutationCtx } from "@workspace/backend/_generated/server.js";
-import { veiculos } from "../model/veiculo.js";
-import { response } from "types/response.js";
-import { errors } from "erros/erros.js";
-import { assinatura_service } from "modules/assinatura/service/assinatura.service.js";
+import { MutationCtx } from "@workspace/backend/_generated/server";
+import { veiculos } from "../model/veiculo";
+import { response } from "types/response";
+import { errors } from "erros/erros";
+import { assinatura_service } from "modules/assinatura/service/assinatura.service";
+ 
+import { cadastro_client_case } from "../../client/use-cases/cadastro-client.case";
 
 export async function cadastro_veiculo_case(ctx:MutationCtx, args:veiculos):Promise<response>{
     //rn11 placa obrigatoria e unica por oficina
@@ -14,9 +16,19 @@ export async function cadastro_veiculo_case(ctx:MutationCtx, args:veiculos):Prom
             content:errors.PLACA_ALREDY_EXISTS
         }
     }else{
+        
         const podeCriar = await (await assinatura_service(ctx, args.oficinaId)).podeCriarVeiculo();
+
         if(podeCriar.sucess == true){
             const createVeiculo = await ctx.db.insert("veiculos", args);
+
+            if(!!args.clienteNome == true){
+                try {
+                    await cadastro_client_case(ctx, args.clienteNome, args.oficinaId, args.clienteTelefone);
+                } catch (error) {
+                    
+                }
+            }
             return{
                 sucess:true,
                 message:"veiculo criado com sucesso",

@@ -26,7 +26,7 @@ export default defineSchema({
     createdAt: v.number(),
   })
     .index("by_status", ["status"])
-    .index("by_nomeFantasia",["nomeFantasia"]),
+    .index("by_nomeFantasia", ["nomeFantasia"]),
 
   planos: defineTable({
     nome: v.union(
@@ -63,6 +63,7 @@ export default defineSchema({
     clienteNome: v.optional(v.string()),
     clienteTelefone: v.optional(v.string()),
     ativo: v.boolean(),
+    clientId: v.optional(v.string())
   })
     .index("by_oficina", ["oficinaId"])
     .index("by_placa_oficina", ["placa", "oficinaId"])
@@ -73,10 +74,17 @@ export default defineSchema({
     descricao: v.string(),
     valor: v.optional(v.number()),
     status: v.any(),
-    dataConclusao:v.optional(v.number())
+    dataConclusao: v.optional(v.number())
   })
     .index("by_oficina", ["oficinaId"])
     .index("by_veiculo", ["veiculoId"])
     .index("by_status", ["status"]),
-
-});
+  cliente: defineTable({
+    oficinaId: v.id("oficinas"),
+    nome: v.string(),
+    telefone: v.optional(v.string()),
+  })
+    .index("by_oficina", ["oficinaId"])
+    .index("by_nome", ["nome"])
+    .index("by_telefone", ["telefone"])
+    });

@@ -1,4 +1,4 @@
-import { BOOLEAN } from "./convex-types.js"
+import { BOOLEAN } from "./convex-types"
 
 export interface response{
     sucess:boolean | BOOLEAN

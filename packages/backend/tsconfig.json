@@ -1,9 +1,14 @@
 {
   "extends": "@workspace/typescript-config/base.json",
   "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "baseUrl": ".",
     "paths": {
-      "@workspace/backend/*": ["./convex/*"]
+      "@workspace/backend/*": ["./convex/*"],
+       "@workspace/backend/modules/*": ["./modules/*"],
+      "@workspace/backend/types/*": ["./types/*"],
+      "@workspace/backend/erros/*": ["./erros/*"]
     }
   },
   "include": ["."],

@@ -1,9 +1,9 @@
-import { MutationCtx } from "@workspace/backend/_generated/server.js";
-import { get_assinatura_case } from "../use-cases/get-assinatura.case.js";
-import { Id } from "@workspace/backend/_generated/dataModel.js";
-import { plano_controller } from "modules/planos/controller/plano.controller.js";
-import { errors } from "erros/erros.js";
-import { response } from "types/response.js";
+import { MutationCtx } from "@workspace/backend/_generated/server";
+import { get_assinatura_case } from "../use-cases/get-assinatura.case";
+import { Id } from "@workspace/backend/_generated/dataModel";
+import { plano_controller } from "modules/planos/controller/plano.controller";
+import { errors } from "erros/erros";
+import { response } from "types/response";
 
 export async function assinatura_service(ctx:MutationCtx, oficinaId:Id<"oficinas">){
     const assinatura = await get_assinatura_case(ctx, {oficinaId:oficinaId});

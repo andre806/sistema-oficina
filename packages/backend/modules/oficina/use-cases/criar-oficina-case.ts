@@ -1,10 +1,10 @@
-import { MutationCtx, QueryCtx } from "@workspace/backend/_generated/server.js";
-import { response } from "types/response.js";
-import { errors } from "../../../erros/erros.js";
-import { oficina } from "../model/oficina.js";
-import { create_assinatura_case } from "modules/assinatura/use-cases/create-assinatura.case.js";
-import { Id } from "@workspace/backend/_generated/dataModel.js";
-import { plano_controller } from "modules/planos/controller/plano.controller.js";
+import { MutationCtx } from "@workspace/backend/_generated/server";
+import { response } from "types/response";
+import { errors } from "../../../erros/erros";
+import { oficina } from "../model/oficina";
+import { create_assinatura_case } from "modules/assinatura/use-cases/create-assinatura.case";
+import { Id } from "@workspace/backend/_generated/dataModel";
+import { plano_controller } from "modules/planos/controller/plano.controller";
 
 export async function criarOficinaCase(ctx:MutationCtx, args:oficina) {
      let res:response = {

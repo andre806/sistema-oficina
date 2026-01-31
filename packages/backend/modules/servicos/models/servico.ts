@@ -1,5 +1,5 @@
-import { Id } from "@workspace/backend/_generated/dataModel.js";
-import { NUMBER, STRING } from "types/convex-types.js";
+import { Id } from "@workspace/backend/_generated/dataModel";
+import { NUMBER, STRING } from "types/convex-types";
 
 export interface servico {
     oficinaId: Id<"oficinas"> ,

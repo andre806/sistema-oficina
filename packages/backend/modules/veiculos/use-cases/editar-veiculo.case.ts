@@ -1,7 +1,7 @@
-import { Id } from "@workspace/backend/_generated/dataModel.js";
-import { MutationCtx } from "@workspace/backend/_generated/server.js";
-import { edit_veiculo_type } from "../types/edit-veiculo-type.js";
-import { response } from "types/response.js";
+import { Id } from "@workspace/backend/_generated/dataModel";
+import { MutationCtx } from "@workspace/backend/_generated/server";
+import { edit_veiculo_type } from "../types/edit-veiculo-type";
+import { response } from "@workspace/backend/types/response";
 
 export async function editar_veiculo_case(
     ctx: MutationCtx,

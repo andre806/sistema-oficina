@@ -1,6 +1,6 @@
-import { Id } from "@workspace/backend/_generated/dataModel.js";
-import { MutationCtx } from "@workspace/backend/_generated/server.js";
-import { assinatura_status } from "types/Assinatura.status.js";
+import { Id } from "@workspace/backend/_generated/dataModel";
+import { MutationCtx } from "@workspace/backend/_generated/server";
+import { assinatura_status } from "types/Assinatura.status";
 
 export async function create_assinatura_case(ctx:MutationCtx, args:{
         oficinaId:Id<"oficinas">,

@@ -1,5 +1,5 @@
-import { MutationCtx } from "@workspace/backend/_generated/server.js";
-import { types_planos } from "types/typesPlano.js";
+import { MutationCtx } from "@workspace/backend/_generated/server";
+import { types_planos } from "types/typesPlano";
 
 export async function plano_controller(ctx:MutationCtx) {
     return{

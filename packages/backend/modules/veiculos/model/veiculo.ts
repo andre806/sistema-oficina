@@ -1,4 +1,4 @@
-import { Id } from "@workspace/backend/_generated/dataModel.js"
+import { Id } from "@workspace/backend/_generated/dataModel"
 
 export interface veiculos {
     oficinaId: Id<"oficinas">

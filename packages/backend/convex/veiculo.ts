@@ -3,9 +3,10 @@ import { mutation, query } from "./_generated/server";
 import { cadastro_veiculo_case } from "../modules/veiculos/use-cases/cadastro-veiculo.case"
 import {editar_veiculo_case} from "../modules/veiculos/use-cases/editar-veiculo.case"
 import { response } from "../types/response";
+import { Id } from "./_generated/dataModel";
 export const criarVeiculo = mutation({
     args: {
-    oficinaId: v.string(),
+    oficinaId: v.id("oficinas"),
     placa: v.string(),
     modelo:v.optional(v.string()),
     ano: v.number(),
@@ -19,7 +20,7 @@ export const criarVeiculo = mutation({
 })
 export const editarVeiculo = mutation({
     args:{
-    oficinaId: v.id("oficinas"),
+    veiculoId:v.id("veiculos"),
     updates: v.object({
     placa: v.string(),
     modelo: v.optional(v.string()),
@@ -30,7 +31,7 @@ export const editarVeiculo = mutation({
     })
     },
     handler:async(ctx, args)  =>{
-        const patch:response= await editar_veiculo_case(ctx, args.oficinaId, args.updates);
+        const patch:response= await editar_veiculo_case(ctx, args.veiculoId , args.updates);
         return patch
     },
 })
